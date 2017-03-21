@@ -1,19 +1,16 @@
 package com.company.Controller;
 
 import com.company.Model.Worker;
-import com.sun.org.apache.xpath.internal.SourceTree;
-import sun.awt.SunToolkit;
-import sun.swing.SwingUtilities2;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static java.lang.System.exit;
-import static java.lang.System.setOut;
-
-public class Controller extends Worker {
+public class Controller {
 
     public List<Worker> workerList = new ArrayList<>();
 
@@ -30,7 +27,7 @@ public class Controller extends Worker {
 
         Worker worker3 = new Worker("Janusz",
                 "Biznesu", 'M',
-                0, 3500, 58, 0, false);
+                1, 3500, 58, 0, false);
         workerList.add(worker3);
 
         Worker worker4 = new Worker("Jan",
@@ -55,27 +52,27 @@ public class Controller extends Worker {
 
         System.out.println("Podaj imie nazwisko: ");
         worker.setLastName(in.nextLine()); //dodajemy nazwisko
-/*
-    System.out.println("Podaj płeć pracownika M/K: ");
-    Scanner reader = new Scanner(System.in);
-    worker.setGender(in.nextLine().charAt(0)) ; //dodajemy płeć
+
+        System.out.println("Podaj płeć pracownika M/K: ");
+        Scanner reader = new Scanner(System.in);
+        worker.setGender(in.nextLine().charAt(0)); //dodajemy płeć
 
 
-    System.out.println("Podaj dział w którym pracuje pracownik: ");
-    worker.setSection(in.nextInt())  ; //dodajemy dział
+        System.out.println("Podaj dział w którym pracuje pracownik: ");
+        worker.setSection(in.nextInt()); //dodajemy dział
 
-    System.out.println("Podaj ilość dzieci pracownika: ");
-    worker.setKids(in.nextInt()) ; //dodajemy dzieci
+        System.out.println("Podaj ilość dzieci pracownika: ");
+        worker.setKids(in.nextInt()); //dodajemy dzieci
 
-    System.out.println("Podaj stan cywilny pracownika: ");
-    worker.setStatus(in.nextBoolean()); //dodajemy imie
+        System.out.println("Podaj stan cywilny pracownika: ");
+        worker.setStatus(in.nextBoolean()); //dodajemy imie
 
-    System.out.println("Podaj wysokośc wypłaty pracownika: ");
-    worker.setSalary(in.nextFloat()); //dodajemy imie
+        System.out.println("Podaj wysokośc wypłaty pracownika: ");
+        worker.setSalary(in.nextFloat()); //dodajemy imie
 
-    System.out.println("Podaj wiek pracownika: ");
-    worker.setAge(in.nextInt()); //dodajemy imie
-*/
+        System.out.println("Podaj wiek pracownika: ");
+        worker.setAge(in.nextInt()); //dodajemy imie
+
         workerList.add(worker);
     }
 
@@ -94,24 +91,19 @@ public class Controller extends Worker {
     public void makeFile() {
         String fileName = "c://Users//lukasz//Desktop//Dane_Personalne.txt";
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(new File(fileName), true);
+            FileWriter writ = new FileWriter(fileName, false);
 
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-
-         //   List<Worker> target = new ArrayList<>();
+            PrintWriter printWriter = new PrintWriter(writ);
             for (Worker f : workerList) {
-                objectOutputStream.writeObject(f.toStringAsFile());
-                //objectOutputStream.close();
+                printWriter.println(f.toStringAsFile() + "\n");
             }
-            fileOutputStream.close();
-            // objectOutputStream.close();
-
+            printWriter.close();
         } catch (FileNotFoundException err) {
             err.printStackTrace();
         } catch (IOException err) {
             err.printStackTrace();
         }
-        exit(0);
+        // exit(0);
     }
 
     public void removeWorker() {
@@ -158,7 +150,7 @@ public class Controller extends Worker {
                     }
                     break;
                 case "b":
-                    System.out.println("Podaj dział w którym pracuje pracownik: ");
+                    System.out.println("Podaj dział w którym będzie pracował pracownik: ");
                     Scanner z = new Scanner(System.in);
                     getWorker().get(q).setSection(z.nextInt());
                     break;
@@ -196,10 +188,15 @@ public class Controller extends Worker {
         boolean flag1 = true;
 
         while (flag1) {
+
             System.out.println("\nDodatkowe funkcje programu:" +
-                    "\n6a. Oblicznanie ilości pracowników z pensją" +
+                    "\n6a. Oblicznanie ilości pracowników z pensją " +
                     "nie mniejszą niż podana" +
                     "\n6b. Obliczanie średniej płacy w dziale." +
+                    "\n6c. Największa wypłata wśród kobiet i mężczyzn." +
+                    "\n6d. Rozkład płci w działach." +
+                    "\n6e. Srednia wypłat kobiet i mężczyzn, oraz stosunek średnich wypłat." +
+                    "\n6f. Podwyższenie wszystkich wypłat o 10%." +
                     "\nX Koniec wprowadzania dodatkowych funkcji.");
             Scanner in = new Scanner(System.in);
             String Option2 = in.nextLine();
@@ -213,7 +210,7 @@ public class Controller extends Worker {
                     int liczba = 0;
                     for (Worker w : workerList) {
                         if (w.getSalary() < money) {
-                            System.out.print(w.getLastName()+ " ");
+                            System.out.print(w.getLastName() + " ");
                             liczba++;
                         }
                     }
@@ -223,19 +220,113 @@ public class Controller extends Worker {
                 case "6b":
                     System.out.println("Podaj numer działu w którym chcesz sprawdzić średnią:");
                     Scanner kin = new Scanner(System.in);
-                    int section = kin.nextInt();
-                    SecondController secondController = new SecondController();
-                    secondController.averageSalary(section);
+                    int Section = kin.nextInt();
+                    float summaryOfSalary = 0;
+                    float amountOfWorkers = 0;
+                    for (Worker v : workerList) {
+                        if (v.getSection() == Section) {
+                            summaryOfSalary = summaryOfSalary + v.getSalary();
+                            amountOfWorkers++;
+                        }
+                    }
+                    float average = summaryOfSalary / amountOfWorkers;
+                    System.out.println("Srednie wynagrodzenie w dziale: " + Section + " równa się: " + average + " złotych");
                     break;
 
                 case "6c":
+                    System.out.println("Podaje wypłaty wśród kobiet w firmie: ");
+                    //wyswietlam wszystkie kobity
+                    for (Worker w : workerList) {
+                        if (w.getGender() == 'K') {
+                            System.out.println("Pani: " + w.getName() + " zarabia: " + w.getSalary() + " złotych.");
+                        }
+                    }
+                    //wyświtlam najwięcej zarabiającą
+                    float maxSalaryWoman = getWorker().get(1).getSalary();
+                    for (Worker k : workerList) {
+                        if (k.getGender() == 'K') {
+                            //    float    maxSalaryWoman = getWorker(1).getSalary();
+                            if (k.getSalary() >= maxSalaryWoman) {
+                                maxSalaryWoman = k.getSalary();
+                            }
+                        }
+                    }
+                    System.out.println("Największa pensja wśród kobiet to: " + maxSalaryWoman + " złotych.\n");
+                    //teraz faceci
+                    System.out.println("Podaje wypłaty wśród mężczyzn w firmie: ");
+                    //wyswietlam wszystkie kobity
+                    for (Worker w : workerList) {
+                        if (w.getGender() == 'M') {
+                            System.out.println("Pan: " + w.getName() + " zarabia: " + w.getSalary() + " złotych.");
+                        }
+                    }
+                    //wyświtlam najwięcej zarabiających
+                    float maxSalaryMan = getWorker().get(1).getSalary();
+                    for (Worker k : workerList) {
+                        if (k.getGender() == 'M') {
+                            if (k.getSalary() >= maxSalaryMan) {
+                                maxSalaryMan = k.getSalary();
+                            }
+                        }
+                    }
+                    System.out.println("Największa pensja wśród mężczyzn to: " + maxSalaryMan + " złotych.\n");
+                    break;
+
+                case "6d":
+                    System.out.println("Dział w budowie!!!");
+                    break;
+
+                case "6e": //średnie pensje faceci
+                    float summaryOfManSalary = 0;
+                    float amountOfManWorkers = 0;
+                    for (Worker m : workerList) {
+                        if (m.getGender() == 'M') {
+                            summaryOfManSalary = summaryOfManSalary + m.getSalary();
+                            amountOfManWorkers++;
+                        }
+                    }
+                    float averageManSalary = summaryOfManSalary / amountOfManWorkers;
+                    System.out.printf("Srednie wynagrodzenie mężczyzn równa się: %5.2f", averageManSalary);
+                    System.out.println("");
+
+                    float summaryOfWomanSalary = 0;
+                    float amountOfWomanWorkers = 0;
+                    for (Worker w : workerList) {
+                        if (w.getGender() == 'K') {
+                            summaryOfWomanSalary = summaryOfWomanSalary + w.getSalary();
+                            amountOfWomanWorkers++;
+                        }
+                    }
+                    float averageWomanSalary = summaryOfWomanSalary / amountOfWomanWorkers;
+                    System.out.printf("Srednie wynagrodzenie kobiet równa się: %5.2f", averageWomanSalary);
+                    System.out.println("");
+                    System.out.printf("Srednia płaca kobiet w stosunku do średniej płacy mężczyzn równa się: %5.2f", averageWomanSalary / averageManSalary);
+                    break;
+
+                case "6f": //zwiększanie pensji wszystkim
+                    System.out.println("Zwiąkszamy pensje wszystkim pracownikom.");
+                    showList();
+                    for (int p = 0; p < workerList.size(); p++) {
+                        float newSalary = 11 * getWorker().get(p).getSalary() / 10;
+                        getWorker().get(p).setSalary(newSalary);
+                    }
+                    System.out.println("Podwyżka!!!");
+                    showList();
 
 
+                    break;
                 case "X":
-                  flag1 = false;
+                    flag1 = false;
             }
         }
     }
+
+
+
+
+
+
+
 }
 
 

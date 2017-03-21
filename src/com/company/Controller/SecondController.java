@@ -6,25 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class SecondController extends Worker {
+public class SecondController extends Controller {
 
     public void averageSalary(int Section) {
-        // System.out.println("Podaj numer działu w którym chcesz sprawdzić średnią:");
 
-        // Scanner in = new Scanner(System.in);
-        // int section = in.nextInt();
         float summaryOfSalary = 0;
         float amountOfWorkers = 0;
 
-        Controller controller1 = new Controller();
-        Worker worker1 = new Worker();
+        //Controller controller1 = new Controller();
 
+      //  List<Worker> workerList = new ArrayList<>();
 
-        for (Worker w : controller1.getWorker()) {
-            if (w.getSection() == Section) {
-                summaryOfSalary = summaryOfSalary + w.getSalary();
+        for (Worker v : this.getWorker()) {
+
+           if (v.getSection() == Section) {
+                summaryOfSalary = summaryOfSalary + v.getSalary();
                 amountOfWorkers++;
-                System.out.println(summaryOfSalary);
+                System.out.println("Działa!!!1");
             }
         }
 

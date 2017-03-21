@@ -1,6 +1,6 @@
 package com.company.Model;
 
-public class Worker {
+public class Worker{
 
     private String name;
     private String lastName;
@@ -113,4 +113,20 @@ public class Worker {
               " "+  salary + " "+ age +" " +kids ;
 
     }
+
+ /*   @Override
+    public int compareTo(Worker o){
+
+        int compareSalary = salary.compareTo(o.salary);
+
+        if(compareSalary == 0){
+
+            return lastName.comapareTo(o.lastName);
+        }
+            else{
+            return  compareSalary;
+        }
+    }
+*/
+
 }
